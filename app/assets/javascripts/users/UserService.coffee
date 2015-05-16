@@ -11,6 +11,7 @@ class UserService
         @$log.debug "listUsers()"
         deferred = @$q.defer()
 
+#和server端通信，返回数据进行处理
         @$http.get("/users")
         .success((data, status, headers) =>
                 @$log.info("Successfully listed Users - status #{status}")
@@ -50,6 +51,21 @@ class UserService
               @$log.error("Failed to update user - status #{status}")
               deferred.reject(data)
             )
+      deferred.promise
+
+    deleteUser: (firstName, lastName) ->
+
+      deferred = @$q.defer()
+
+      @$http.delete("/users/#{firstName}/#{lastName}")
+      .success((data, status, headers) =>
+        @$log.info("Successfully updated User - status #{status}")
+        deferred.resolve(data)
+      )
+      .error((data, status, header) =>
+        @$log.error("Failed to update user - status #{status}")
+        deferred.reject(data)
+      )
       deferred.promise
 
 servicesModule.service('UserService', UserService)

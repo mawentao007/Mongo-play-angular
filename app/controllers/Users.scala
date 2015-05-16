@@ -45,7 +45,7 @@ class Users extends Controller with MongoController {
      * (insert() takes a JsObject as parameter, or anything that can be
      * turned into a JsObject using a Writes.)
      */
-      request.body.validate[User].map {
+      request.body.validate[User].map {         //validate JsValue ->JsResult
         user =>
         // `user` is an instance of the case class `models.User`
           collection.insert(user).map {
@@ -56,7 +56,19 @@ class Users extends Controller with MongoController {
       }.getOrElse(Future.successful(BadRequest("invalid json")))
   }
 
-  def updateUser(firstName: String, lastName: String) = Action.async(parse.json) {
+
+  def deleteUser(firstName:String,lastName:String) = Action.async{
+    val nameSelector = Json.obj("firstName" -> firstName, "lastName" -> lastName)
+    collection.remove(nameSelector).map{
+      lastError =>
+        Ok("go")
+    }
+
+  }
+
+
+
+  def updateUser(firstName: String, lastName: String) = Action.async(parse.json) {  //添加parse解析器
     request =>
       request.body.validate[User].map {
         user =>

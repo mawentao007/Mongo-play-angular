@@ -19,4 +19,5 @@ class UserCtrl
                 @$log.error "Unable to get Users: #{error}"
             )
 
+#注册controller（构造函数，本地注入）
 controllersModule.controller('UserCtrl', UserCtrl)

@@ -42,6 +42,9 @@
                     <td>
                         <a ng-href="/#/users/edit/{{usr.firstName}}/{{usr.lastName}}" class="btn btn-success pull-right" id="btn_user_update">Edit User</a>
                     </td>
+                    <td>
+                        <a ng-href="/#/users/{{usr.firstName}}/{{usr.lastName}}" class="btn btn-success pull-right" id="btn_user_delete">delete User</a>
+                    </td>
                 </tr>
                 <tr ng-hide="uc.users.length">
                     <td colspan="3">
