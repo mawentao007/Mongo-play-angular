@@ -44,6 +44,7 @@
                     </td>
                     <td>
                         <a ng-href="/#/users/{{usr.firstName}}/{{usr.lastName}}" class="btn btn-success pull-right" id="btn_user_delete">delete User</a>
+                        <a ng-click="uc.deleteUser(usr.firstName,usr.lastName)" class="btn btn-success pull-right" id="btn_user_delete2">delete User2</a>
                     </td>
                 </tr>
                 <tr ng-hide="uc.users.length">
