@@ -25,4 +25,6 @@ class Application @Inject() (uuidGenerator: UUIDGenerator) extends Controller {
     Ok(uuidGenerator.generate.toString)
   }
 
+
+
 }

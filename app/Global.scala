@@ -1,6 +1,11 @@
 import com.google.inject.{Guice, AbstractModule}
 import play.api.GlobalSettings
+import play.api.mvc.RequestHeader
 import services.{SimpleUUIDGenerator, UUIDGenerator}
+import play.api.mvc.Results._
+
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 
 /**
  * Set up the Guice injector and provide the mechanism for return objects from the dependency graph.
@@ -15,6 +20,10 @@ object Global extends GlobalSettings {
       bind(classOf[UUIDGenerator]).to(classOf[SimpleUUIDGenerator])
     }
   })
+
+  /*override def onBadRequest(request: RequestHeader, error: String) = {
+    Future(BadRequest("Bad Request: " + error))
+  }*/
 
   /**
    * Controllers must be resolved through the application context. There is a special method of GlobalSettings

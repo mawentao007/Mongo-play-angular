@@ -2,7 +2,8 @@ package controllers
 
 import play.modules.reactivemongo.MongoController
 import play.modules.reactivemongo.json.collection.JSONCollection
-import scala.concurrent.Future
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, Future}
 import reactivemongo.api.Cursor
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import org.slf4j.{LoggerFactory, Logger}
@@ -20,6 +21,8 @@ class Users extends Controller with MongoController {
 
   private final val logger: Logger = LoggerFactory.getLogger(classOf[Users])
 
+  private val duration = Duration(100,"ms")
+
   /*
    * Get a JSONCollection (a Collection implementation that is designed to work
    * with JsObject, Reads and Writes.)
@@ -36,23 +39,56 @@ class Users extends Controller with MongoController {
   import models._
   import models.JsonFormats._
 
+  /*
+  * request.body is a JsValue.
+  * There is an implicit Writes that turns this JsValue as a JsObject,
+  * so you can call insert() with this JsValue.
+  * (insert() takes a JsObject as parameter, or anything that can be
+  * turned into a JsObject using a Writes.)
+  *
+  *
+  * Performing a simple query
+
+Queries are performed quite the same way as in the Mongo Shell.
+
+val query = BSONDocument(
+"age" -> BSONDocument(
+ "$gt" -> 27))
+
+// result type is Future[List[BSONDocument]]
+val peopleOlderThanTwentySeven =
+collection.
+ find(query).
+ cursor[BSONDocument].
+ collect[List]()
+Of course you can collect only a limited number of documents.
+
+val peopleOlderThanTwentySeven =
+collection.
+ find(query).
+ cursor[BSONDocument].
+ collect[List](25) // get up to 25 documents
+  */
+
+
   def createUser = Action.async(parse.json) {
     request =>
-    /*
-     * request.body is a JsValue.
-     * There is an implicit Writes that turns this JsValue as a JsObject,
-     * so you can call insert() with this JsValue.
-     * (insert() takes a JsObject as parameter, or anything that can be
-     * turned into a JsObject using a Writes.)
-     */
-      request.body.validate[User].map {         //validate JsValue ->JsResult
+      request.body.validate[User].map {
+        //validate JsValue ->JsResult
         user =>
-        // `user` is an instance of the case class `models.User`
-          collection.insert(user).map {
-            lastError =>
-              logger.debug(s"Successfully inserted with LastError: $lastError")
-              Created(s"User Created")
+          val nameSelector = Json.obj("firstName" -> user.firstName, "lastName" -> user.lastName)
+          val futureList = collection.find(nameSelector).cursor[User].collect[List](1)
+          val num = Await.result(futureList, duration).size
+          if(num > 0){
+            Future(BadRequest("exist"))
+          }else {
+            collection.insert(user).map {
+              lastError =>
+                logger.debug(s"Successfully inserted with LastError: $lastError")
+                Created(s"User Created")
+            }
           }
+
       }.getOrElse(Future.successful(BadRequest("invalid json")))
   }
 

@@ -34,6 +34,7 @@ class UserService
             )
         .error((data, status, headers) =>
                 @$log.error("Failed to create user - status #{status}")
+                alert("user exist")
                 deferred.reject(data)
             )
         deferred.promise
