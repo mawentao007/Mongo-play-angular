@@ -1,4 +1,7 @@
 .idea
+.classpath
+.settings
+.cache
 logs
 project/target
 project/project
