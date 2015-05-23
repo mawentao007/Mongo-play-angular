@@ -5,6 +5,8 @@
 # ~~~~
 
 # Single endpoint for serving AngularJS
+GET           /login                             @controllers.Application.login
+POST          /login                             @controllers.Application.authenticate
 GET           /                                  @controllers.Application.index
 GET           /randomUUID                        @controllers.Application.randomUUID
 
@@ -16,4 +18,5 @@ DELETE        /users/:firstName/:lastName        @controllers.Users.deleteUser(f
 
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file                      controllers.Assets.at(path="/public", file)
+GET           /usert                             @controllers.Users.test
 

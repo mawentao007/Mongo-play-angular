@@ -30,6 +30,8 @@ class Users extends Controller with MongoController {
    * the collection reference to avoid potential problems in development with
    * Play hot-reloading.
    */
+
+  //创建集合，类似于创建表
   def collection: JSONCollection = db.collection[JSONCollection]("users")
 
   // ------------------------------------------ //
@@ -140,6 +142,10 @@ collection.
       users =>
         Ok(users(0))
     }
+  }
+
+  def test = Action.async{
+    Future.successful(Ok("Hello world"))
   }
 
 }

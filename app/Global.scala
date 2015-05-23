@@ -5,7 +5,7 @@ import services.{SimpleUUIDGenerator, UUIDGenerator}
 import play.api.mvc.Results._
 
 import scala.concurrent.Future
-import scala.concurrent.ExecutionContext.Implicits.global
+
 
 /**
  * Set up the Guice injector and provide the mechanism for return objects from the dependency graph.
@@ -21,9 +21,18 @@ object Global extends GlobalSettings {
     }
   })
 
-  /*override def onBadRequest(request: RequestHeader, error: String) = {
-    Future(BadRequest("Bad Request: " + error))
-  }*/
+  override def onBadRequest(request: RequestHeader, error: String) = {
+      Future.successful(BadRequest("Bad Request: " + error))
+  }
+
+
+  override def onHandlerNotFound(request: RequestHeader) = {
+    Future.successful(NotFound(
+      views.html.notFoundPage()
+    ))
+  }
+
+
 
   /**
    * Controllers must be resolved through the application context. There is a special method of GlobalSettings
