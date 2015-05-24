@@ -10,7 +10,8 @@ import play.api.Logger
 import play.api.mvc._
 import views.html
 
-import scala.text
+import scala.concurrent.Future
+
 
 /**
  * Instead of declaring an object of Application as per the template project, we must declare a class given that
@@ -18,7 +19,7 @@ import scala.text
  * @param uuidGenerator the UUID generator service we wish to receive.
  */
 @Singleton
-class Application @Inject() (uuidGenerator: UUIDGenerator) extends Controller {
+class Application @Inject() (uuidGenerator: UUIDGenerator) extends Controller with Secured{
 
 
   val loginForm = Form(
@@ -32,10 +33,14 @@ class Application @Inject() (uuidGenerator: UUIDGenerator) extends Controller {
   )
 
 
-  def index = Action {
-    request =>
+  def index = Action{
+    implicit request =>
       Logger.info("Serving index page...")
-      Ok(html.index())
+      request.session.get("userName") match{
+        case Some(s) => Ok(html.index(s))
+        case None => Ok(html.index("anonymous"))
+      }
+
   }
 
   def randomUUID = Action {
@@ -64,5 +69,13 @@ class Application @Inject() (uuidGenerator: UUIDGenerator) extends Controller {
 }
 
 trait Secured{
-  private def username(request: RequestHeader) = request.session.get("email")
+  private def username(request: RequestHeader) = request.session.get("userName")
+
+  private def onUnauthorized(request: RequestHeader) = Results.Redirect(routes.Application.login)
+
+  //action 合并，Authenticated返回就是一个action，里面又嵌套了一个。
+  def IsAuthenticated(f: => String => Request[AnyContent] => Result) = Security.Authenticated(username, onUnauthorized) { user =>
+    Action.async(request => Future.successful(f(user)(request)))
+  }
+
 }

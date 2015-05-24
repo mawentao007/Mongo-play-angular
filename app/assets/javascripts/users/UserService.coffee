@@ -43,7 +43,7 @@ class UserService
       @$log.debug "updateUser #{angular.toJson(user, true)}"
       deferred = @$q.defer()
 
-      @$http.put("/user/#{firstName}/#{lastName}", user)
+      @$http.put("/user/#{userName}/#{email}", user)
       .success((data, status, headers) =>
               @$log.info("Successfully updated User - status #{status}")
               deferred.resolve(data)

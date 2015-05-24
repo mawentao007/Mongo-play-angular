@@ -13,7 +13,8 @@ import scala.util.{Failure, Success}
 
 
 
-case class User( userName: String,
+case class User( email:String,
+                 userName: String,
                  password: String
                  )
 

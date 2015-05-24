@@ -24,7 +24,7 @@
                 <thead>
                 <tr>
                     <th>userName</th>
-                    <th>password</th>
+                    <th>email</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -33,15 +33,15 @@
                         {{ usr.userName }}
                     </td>
                     <td>
-                        {{ usr.password }}
+                        {{ usr.email }}
                     </td>
 
                     <td>
-                        <a ng-href="/#/users/edit/{{usr.userName}}/{{usr.password}}" class="btn btn-success pull-right" id="btn_user_update">Edit User</a>
+                        <a ng-href="/#/users/edit/{{usr.userName}}/{{usr.email}}" class="btn btn-success pull-right" id="btn_user_update">Edit User</a>
                     </td>
                     <td>
-                        <a ng-href="/#/users/{{usr.userName}}/{{usr.password}}" class="btn btn-success pull-right" id="btn_user_delete">delete User</a>
-                        <!--a ng-click="uc.deleteUser(usr.userName,usr.password)" class="btn btn-success pull-right" id="btn_user_delete2">delete User2</a-->
+                        <a ng-href="/#/users/{{usr.userName}}/{{usr.email}}" class="btn btn-success pull-right" id="btn_user_delete">delete User</a>
+                        <!--a ng-click="uc.deleteUser(usr.userName,usr.email)" class="btn btn-success pull-right" id="btn_user_delete2">delete User2</a-->
                     </td>
                 </tr>
                 <tr ng-hide="uc.users.length">

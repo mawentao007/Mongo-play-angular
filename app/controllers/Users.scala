@@ -95,8 +95,8 @@ collection.
   }
 
 
-  def deleteUser(userName:String,password:String) = Action.async{
-    val nameSelector = Json.obj("userName" -> userName, "password" -> password)
+  def deleteUser(userName:String,email:String) = Action.async{
+    val nameSelector = Json.obj("userName" -> userName, "email" -> email)
     collection.remove(nameSelector).map{
       lastError =>
         Ok("go")
@@ -106,15 +106,17 @@ collection.
 
 
 
-  def updateUser(userName: String, password: String) = Action.async(parse.json) {  //添加parse解析器
+  def updateUser(userName: String, email: String) = Action.async(parse.json) {  //添加parse解析器
     request =>
+
+
       request.body.validate[User].map {
         user =>
           // find our user by first name and last name
-          val nameSelector = Json.obj("userName" -> userName, "password" -> password)
+          val nameSelector = Json.obj("userName" -> userName, "email" -> email)
           collection.update(nameSelector, user).map {
             lastError =>
-              logger.debug(s"Successfully updated with LastError: $lastError")
+              logger.info(s"Successfully updated with LastError: $lastError")
               Created(s"User Updated")
           }
       }.getOrElse(Future.successful(BadRequest("invalid json")))

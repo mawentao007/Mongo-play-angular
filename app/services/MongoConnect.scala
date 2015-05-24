@@ -16,7 +16,7 @@ object MongoConnect {
     val connection = driver.connection(List("localhost"))
 
     // Gets a reference to the database "plugin"
-    val db = connection("theSpecialOne")
+    val db = connection("one")
 
     // Gets a reference to the collection "acoll"
     // By default, you get a BSONCollection.

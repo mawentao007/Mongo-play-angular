@@ -6,25 +6,25 @@
         <legend class="sm-col-12">Basic Information</legend>
 
         <div class="form-group">
-            <label id="lbl_firstName" for="firstName" class="col-sm-4 control-label">First Name</label>
+            <label id="lbl_userName" for="userName" class="col-sm-4 control-label">user name</label>
 
             <div class="col-sm-8">
-                <input type="text" class="form-control" name="firstName" id="firstName" placeholder=""
-                       ng-model="uuc.user.firstName">
+                <input type="text" class="form-control" name="userName" id="userName" placeholder=""
+                       ng-model="uuc.user.userName">
                 <!--在这给user赋值 -->
             </div>
         </div>
 
         <div class="form-group">
-            <label id="lbl_lastName" for="lastName" class="col-sm-4 control-label">Last Name</label>
+            <label id="lbl_email" for="email" class="col-sm-4 control-label">email</label>
 
             <div class="col-sm-8">
-                <input type="text" class="form-control" name="lastName" id="lastName" placeholder=""
-                       ng-model="uuc.user.lastName">
+                <input type="text" class="form-control" name="email" id="email" placeholder=""
+                       ng-model="uuc.user.email">
             </div>
         </div>
 
-        <div class="form-group">
+        <!--<div class="form-group">
             <label id="lbl_age" for="age" class="col-sm-4 control-label"
                    is-required="CreateUserForm.age">Age</label>
 
@@ -32,9 +32,9 @@
                 <input type="number" class="form-control" name="age" id="age"
                        ng-model="uuc.user.age">
             </div>
-        </div>
+        </div>-->
 
-        <div class="form-group">
+       <!-- <div class="form-group">
             <label id="lbl_active" for="active" class="col-sm-4 control-label"
                    is-required="CreateUserForm.active">Active</label>
 
@@ -42,7 +42,7 @@
                 <input type="text" class="form-control" name="active" id="active"
                        ng-model="uuc.user.active">
             </div>
-        </div>
+        </div>-->
 
         <pre>{{ uuc.user | json }}</pre>
 
