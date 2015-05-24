@@ -108,18 +108,30 @@ collection.
 
   def updateUser(userName: String, email: String) = Action.async(parse.json) {  //添加parse解析器
     request =>
+      val modifer =Json.obj(
+        "$set" -> Json.obj(
+          "userName" -> request.body\"userName",
+          "email" -> request.body\"email"
+        )
+      )
 
+      val nameSelector = Json.obj("userName" -> userName, "email" -> email)
+      collection.update(nameSelector, modifer).map {
+        lastError =>
+          logger.info(s"Successfully updated with LastError: $lastError")
+          Created(s"User Updated")
+      }
 
-      request.body.validate[User].map {
-        user =>
+   /* request.body.validate[User].map {
+        user =>*/
           // find our user by first name and last name
-          val nameSelector = Json.obj("userName" -> userName, "email" -> email)
+         /* val nameSelector = Json.obj("userName" -> userName, "email" -> email)
           collection.update(nameSelector, user).map {
             lastError =>
               logger.info(s"Successfully updated with LastError: $lastError")
               Created(s"User Updated")
           }
-      }.getOrElse(Future.successful(BadRequest("invalid json")))
+      }.getOrElse(Future.successful(BadRequest("invalid json")))*/
   }
 
   def findUsers = Action.async {

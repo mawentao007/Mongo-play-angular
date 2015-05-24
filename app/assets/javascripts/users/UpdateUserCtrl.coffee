@@ -10,7 +10,6 @@ class UpdateUserCtrl
 
   #这里的user的确不是findUser中赋值的，是在view中通过submit提交的值。
   updateUser: () ->
-      @$log.debug "!!!!() #{angular.toJson(@user, true)}"
       @UserService.updateUser(@$routeParams.userName, @$routeParams.email, @user)
       .then(
           (data) =>
