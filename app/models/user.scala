@@ -1,9 +1,11 @@
 package models
 
 
-import org.slf4j.{LoggerFactory, Logger}
+
+import play.api.Logger
 import play.api.libs.json._
 import services.MongoConnect._
+import sun.security.util.Password
 
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Future}
@@ -11,10 +13,10 @@ import scala.util.{Failure, Success}
 
 
 
-case class User( age: Int,
-                 firstName: String,
-                 lastName: String,
-                 active: Boolean)
+case class User( userName: String,
+                 password: String
+                 )
+
 
 object JsonFormats {
   import play.api.libs.json.Json
@@ -30,18 +32,25 @@ object JsonFormats {
 object User{
   import JsonFormats._
   import play.api.libs.concurrent.Execution.Implicits.defaultContext
-  private final val logger: Logger = LoggerFactory.getLogger(classOf[User])
+ /* private final val logger: Logger = Logger(this.getClass())*/
 
   private val duration = Duration(100,"ms")
   private def collection = getCollection("users")
 
-  def authenticate(firstname:String,lastname:String):Option[User] = {
-   val userList:Future[List[User]] = collection.find(Json.obj("firstname" -> firstname,"lastname"->lastname)).cursor[User]
-    .collect[List]()
+  def authenticate(userName:String,password: String):Option[User] = {
+   val userList:Future[List[User]] = collection.find(Json.obj("userName" -> userName,"password"->password)).cursor[User]
+    .collect[List]()              //妈蛋大小写错了花了我好长时间，注意Json.obj中相应字段大小写！！！
  //   Duration.Inf  无限等待
+
     val result:List[User]  = Await.result(userList,Duration.Inf)
+
+   /* val nameSelector = Json.obj("firstName" -> firstname, "lastName" -> lastname)
+    val futureList = collection.find(nameSelector).cursor[User].collect[List](1)
+    val num = Await.result(futureList, duration).size*/
+    Logger.info(result.size.toString)
     if(result.isEmpty) return None
     Some(result.head)
+
     //Some(User(12,"12","12",true))
 
   }

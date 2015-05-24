@@ -1,4 +1,4 @@
-name := "modern-web-template"
+name := "the special one"
 
 version := "0.1-SNAPSHOT"
 
@@ -16,5 +16,10 @@ libraryDependencies ++= Seq(
   "org.webjars" % "angularjs" % "1.3.8",
   "org.webjars" % "angular-ui-bootstrap" % "0.12.0",
   "org.mockito" % "mockito-core" % "1.10.17" % "test")
+
+
+includeFilter in (Assets, LessKeys.less) := "*.less"
+excludeFilter in (Assets, LessKeys.less) := "_*.less"
+
 
 

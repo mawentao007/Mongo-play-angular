@@ -78,7 +78,7 @@ collection.
       request.body.validate[User].map {
         //validate JsValue ->JsResult
         user =>
-          val nameSelector = Json.obj("firstName" -> user.firstName, "lastName" -> user.lastName)
+          val nameSelector = Json.obj("firstName" -> user.userName, "password" -> user.password)
           val futureList = collection.find(nameSelector).cursor[User].collect[List](1)
           val num = Await.result(futureList, duration).size
           if(num > 0){
@@ -95,8 +95,8 @@ collection.
   }
 
 
-  def deleteUser(firstName:String,lastName:String) = Action.async{
-    val nameSelector = Json.obj("firstName" -> firstName, "lastName" -> lastName)
+  def deleteUser(userName:String,password:String) = Action.async{
+    val nameSelector = Json.obj("userName" -> userName, "password" -> password)
     collection.remove(nameSelector).map{
       lastError =>
         Ok("go")
@@ -106,12 +106,12 @@ collection.
 
 
 
-  def updateUser(firstName: String, lastName: String) = Action.async(parse.json) {  //添加parse解析器
+  def updateUser(userName: String, password: String) = Action.async(parse.json) {  //添加parse解析器
     request =>
       request.body.validate[User].map {
         user =>
           // find our user by first name and last name
-          val nameSelector = Json.obj("firstName" -> firstName, "lastName" -> lastName)
+          val nameSelector = Json.obj("userName" -> userName, "password" -> password)
           collection.update(nameSelector, user).map {
             lastError =>
               logger.debug(s"Successfully updated with LastError: $lastError")
@@ -124,7 +124,7 @@ collection.
     // let's do our query
     val cursor: Cursor[User] = collection.
       // find all
-      find(Json.obj("active" -> true)).
+      find(Json.obj()).
       // sort them by creation date
       sort(Json.obj("created" -> -1)).
       // perform the query and get a cursor of JsObject
