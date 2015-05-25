@@ -1,5 +1,6 @@
 package controllers
 
+
 import play.modules.reactivemongo.MongoController
 import play.modules.reactivemongo.json.collection.JSONCollection
 import scala.concurrent.duration.Duration
@@ -17,7 +18,7 @@ import play.api.libs.json._
  * @see https://github.com/ReactiveMongo/Play-ReactiveMongo
  */
 @Singleton
-class Users extends Controller with MongoController {
+class Users extends Controller with MongoController with Secured {
 
 
   private val duration = Duration(100,"ms")
@@ -72,10 +73,9 @@ collection.
   */
 
 
-  def createUser = Action.async(parse.json) {
-    request =>
+  def createUser = IsAuthenticated(parse.json){
+    user => request =>
       request.body.validate[User].map {
-        //validate JsValue ->JsResult
         user =>
           val nameSelector = Json.obj("firstName" -> user.userName, "password" -> user.password)
           val futureList = collection.find(nameSelector).cursor[User].collect[List](1)

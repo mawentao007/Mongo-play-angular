@@ -10,6 +10,7 @@ import play.api.Logger
 import play.api.mvc._
 import views.html
 
+
 import scala.concurrent.Future
 
 
@@ -68,14 +69,19 @@ class Application @Inject() (uuidGenerator: UUIDGenerator) extends Controller wi
 
 }
 
-trait Secured{
-  private def username(request: RequestHeader) = request.session.get("userName")
+trait Secured extends Results{
+  private def username(request: RequestHeader) =request.session.get("userName")    //Some("marvin")//
 
-  private def onUnauthorized(request: RequestHeader) = Results.Redirect(routes.Application.login)
+  private def onUnauthorized(request: RequestHeader) = BadRequest("UnAuthorized")//Results.Redirect(routes.Application.login)
 
   //action 合并，Authenticated返回就是一个action，里面又嵌套了一个。
   def IsAuthenticated(f: => String => Request[AnyContent] => Result) = Security.Authenticated(username, onUnauthorized) { user =>
     Action.async(request => Future.successful(f(user)(request)))
   }
+
+  def IsAuthenticated[A](bodyParser: BodyParser[A])(f: => String => Request[A] => Future[Result]) = Security.Authenticated(username, onUnauthorized) { user =>
+    Action.async(bodyParser)(request => f(user)(request))
+  }
+
 
 }

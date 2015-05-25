@@ -1,7 +1,8 @@
 
 class CreateUserCtrl
 
-    constructor: (@$log, @$location,  @UserService) ->
+    ###$window可以刷新页面###
+    constructor: (@$window,@$log, @$location,  @UserService) ->
         @$log.debug "constructing CreateUserController"
         @user = {}
 
@@ -16,6 +17,8 @@ class CreateUserCtrl
             ,
             (error) =>
                 @$log.error "Unable to create User: #{error}"
+                @$window.location.href = '/login'
+
             )
 
 controllersModule.controller('CreateUserCtrl', CreateUserCtrl)
