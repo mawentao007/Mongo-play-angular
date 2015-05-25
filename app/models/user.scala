@@ -5,11 +5,10 @@ package models
 import play.api.Logger
 import play.api.libs.json._
 import services.MongoConnect._
-import sun.security.util.Password
+
 
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Future}
-import scala.util.{Failure, Success}
 
 
 

@@ -6,7 +6,7 @@ import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Future}
 import reactivemongo.api.Cursor
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
-import org.slf4j.{LoggerFactory, Logger}
+import play.api.Logger
 import javax.inject.Singleton
 import play.api.mvc._
 import play.api.libs.json._
@@ -19,7 +19,6 @@ import play.api.libs.json._
 @Singleton
 class Users extends Controller with MongoController {
 
-  private final val logger: Logger = LoggerFactory.getLogger(classOf[Users])
 
   private val duration = Duration(100,"ms")
 
@@ -86,7 +85,7 @@ collection.
           }else {
             collection.insert(user).map {
               lastError =>
-                logger.debug(s"Successfully inserted with LastError: $lastError")
+                Logger.debug(s"Successfully inserted with LastError: $lastError")
                 Created(s"User Created")
             }
           }
@@ -118,14 +117,14 @@ collection.
       val nameSelector = Json.obj("userName" -> userName, "email" -> email)
       collection.update(nameSelector, modifer).map {
         lastError =>
-          logger.info(s"Successfully updated with LastError: $lastError")
+          Logger.info(s"Successfully updated with LastError: $lastError")
           Created(s"User Updated")
       }
 
-   /* request.body.validate[User].map {
-        user =>*/
-          // find our user by first name and last name
-         /* val nameSelector = Json.obj("userName" -> userName, "email" -> email)
+  /* request.body.validate[User].map {
+        user =>
+          //find our user by first name and last name
+         val nameSelector = Json.obj("userName" -> userName, "email" -> email)
           collection.update(nameSelector, user).map {
             lastError =>
               logger.info(s"Successfully updated with LastError: $lastError")

@@ -24,10 +24,10 @@ angular.module('myApp.routeConfig', ['ngRoute'])
             .when('/users/create', {
                 templateUrl: '/assets/partials/create.html'
             })
-            .when('/users/edit/:firstName/:lastName', {
+            .when('/users/edit/:userName/:email', {
                 templateUrl: '/assets/partials/update.html'
             })
-            .when('/users/:firstName/:lastName', {
+            .when('/users/:userName/:email', {
                 templateUrl: '/assets/partials/delete.html'
             })
             .when('/usert',{

@@ -2,6 +2,7 @@ class UpdateUserCtrl
 
   constructor: (@$log, @$location, @$routeParams, @UserService) ->
       @$log.debug "constructing UpdateUserController"
+      @$log.debug "@"
       @user = {}
 
       #在这里就调用了函数

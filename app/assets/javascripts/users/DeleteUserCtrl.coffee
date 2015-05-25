@@ -7,9 +7,10 @@ class DeleteUserCtrl
 
     deleteUser: () ->
         @$log.debug "deleteUser()"
-        firstName = @$routeParams.firstName
-        lastName = @$routeParams.lastName
-        @UserService.deleteUser(firstName,lastName)
+        userName = @$routeParams.userName
+        @$log.debug "#{@$routeParams}"
+        email = @$routeParams.email
+        @UserService.deleteUser(userName,email)
         .then(
             (data) =>
                 @$log.debug "Promise returned #{data} User"

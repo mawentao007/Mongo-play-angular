@@ -19,9 +19,9 @@ class UserCtrl
                 @$log.error "Unable to get Users: #{error}"
             )
 
-    deleteUser: (firstName,lastName) ->
+    deleteUser: (userName,email) ->
         @$log.debug "deleteUser()"
-        @UserService.deleteUser(firstName,lastName)
+        @UserService.deleteUser(userName,email)
         .then(
             (data) =>
                 @$log.debug "Promise returned #{data} User"
