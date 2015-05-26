@@ -2,7 +2,7 @@
 class DeleteUserCtrl
 
     constructor: (@$log, @$location,@$routeParams, @UserService) ->
-        @$log.debug "constructing CreateUserController"
+        @$log.debug "constructing DeleteUserController"
         @deleteUser()
 
     deleteUser: () ->
@@ -18,6 +18,8 @@ class DeleteUserCtrl
             ,
             (error) =>
                 @$log.error "Unable to delete User: #{error}"
+                alert(error)
+                @$location.path("/")
             )
 
 controllersModule.controller('DeleteUserCtrl', DeleteUserCtrl)

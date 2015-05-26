@@ -94,13 +94,17 @@ collection.
   }
 
 
-  def deleteUser(userName:String,email:String) = IsAuthenticated(parse.json){
+  def deleteUser(userName:String,email:String) = IsAuthenticated{
     user => request =>
-    val nameSelector = Json.obj("userName" -> userName, "email" -> email)
-    collection.remove(nameSelector).map{
-      lastError =>
-        Ok("go")
-    }
+      if(userName == "admin"){
+        Future.successful(BadRequest("do not do that!"))
+      }else {
+        val nameSelector = Json.obj("userName" -> userName, "email" -> email)
+        collection.remove(nameSelector).map {
+          lastError =>
+            Ok("go")
+        }
+      }
 
   }
 
@@ -159,6 +163,7 @@ collection.
         users =>
           Ok(users(0))
       }
+
     }
 
   def test = Action.async{
