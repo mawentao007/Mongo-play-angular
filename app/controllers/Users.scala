@@ -94,7 +94,8 @@ collection.
   }
 
 
-  def deleteUser(userName:String,email:String) = Action.async{
+  def deleteUser(userName:String,email:String) = IsAuthenticated(parse.json){
+    user => request =>
     val nameSelector = Json.obj("userName" -> userName, "email" -> email)
     collection.remove(nameSelector).map{
       lastError =>
@@ -105,8 +106,9 @@ collection.
 
 
 
-  def updateUser(userName: String, email: String) = Action.async(parse.json) {  //添加parse解析器
-    request =>
+  def updateUser(userName: String, email: String) = IsAuthenticated(parse.json) {  //添加parse解析器
+    user =>
+      request =>
       val modifer =Json.obj(
         "$set" -> Json.obj(
           "userName" -> request.body\"userName",
@@ -133,29 +135,31 @@ collection.
       }.getOrElse(Future.successful(BadRequest("invalid json")))*/
   }
 
-  def findUsers = Action.async {
+  def findUsers = IsAuthenticated{
+    user =>
+      request =>
     // let's do our query
-    val cursor: Cursor[User] = collection.
-      // find all
-      find(Json.obj()).
-      // sort them by creation date
-      sort(Json.obj("created" -> -1)).
+      val cursor: Cursor[User] = collection.
+        // find all
+        find(Json.obj()).
+        // sort them by creation date,根据id倒排
+        sort(Json.obj("_id" -> -1)).
       // perform the query and get a cursor of JsObject
-      cursor[User]
+        cursor[User]
 
     // gather all the JsObjects in a list
-    val futureUsersList: Future[List[User]] = cursor.collect[List]()
+      val futureUsersList: Future[List[User]] = cursor.collect[List]()
 
     // transform the list into a JsArray
-    val futurePersonsJsonArray: Future[JsArray] = futureUsersList.map { users =>
-      Json.arr(users)
-    }
+      val futurePersonsJsonArray: Future[JsArray] = futureUsersList.map { users =>
+        Json.arr(users)
+      }
     // everything's ok! Let's reply with the array
-    futurePersonsJsonArray.map {
-      users =>
-        Ok(users(0))
+      futurePersonsJsonArray.map {
+        users =>
+          Ok(users(0))
+      }
     }
-  }
 
   def test = Action.async{
     Future.successful(Ok("Hello world"))

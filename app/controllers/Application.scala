@@ -69,19 +69,32 @@ class Application @Inject() (uuidGenerator: UUIDGenerator) extends Controller wi
 
 }
 
-trait Secured extends Results{
+trait Secured extends Results {
   private def username(request: RequestHeader) =request.session.get("userName")    //Some("marvin")//
 
   private def onUnauthorized(request: RequestHeader) = BadRequest("UnAuthorized")//Results.Redirect(routes.Application.login)
 
-  //action 合并，Authenticated返回就是一个action，里面又嵌套了一个。
-  def IsAuthenticated(f: => String => Request[AnyContent] => Result) = Security.Authenticated(username, onUnauthorized) { user =>
-    Action.async(request => Future.successful(f(user)(request)))
-  }
+  //action 合并，Authenticated返回就是一个action，里面又嵌套了一个。这是一个carrying函数，有两部分参数，如果获得了username，就将结果map到后面的action
 
-  def IsAuthenticated[A](bodyParser: BodyParser[A])(f: => String => Request[A] => Future[Result]) = Security.Authenticated(username, onUnauthorized) { user =>
+  object IsAuthenticated {
+   /* def apply(f: => String => Request[AnyContent] => Result) = Security.Authenticated(username, onUnauthorized) { user =>
+      Action.async(request => Future.successful(f(user)(request)))
+    }*/
+
+    //函数重载，需要提供返回值类型？
+    def apply(f: => String => Request[AnyContent] => Future[Result]):EssentialAction = apply(BodyParsers.parse.anyContent)(f)
+
+    //currying函数，在传入bodyParser时候A的类型被固定，Request的类型也就被固定。如果不用这样的方式，实际上在request被传入的时候类型是any，
+    //那么async的类型就和request类型不一致。
+    def apply[A](bodyParser: BodyParser[A])(f: => String => Request[A] => Future[Result]):EssentialAction =
+      Security.Authenticated(username, onUnauthorized) {
+        user =>
+          Action.async(bodyParser)(request => f(user)(request))
+      }
+
+    /* def IsAuthenticated[A](bodyParser: BodyParser[A],f: => String => Request[A] => Future[Result]) = Security.Authenticated(username, onUnauthorized) { user =>
     Action.async(bodyParser)(request => f(user)(request))
+  }*/
   }
-
 
 }
