@@ -17,7 +17,7 @@ import play.api.libs.json._
 /**
  * Created by marvin on 15-5-26.
  */
-object Post extends Controller with MongoController with Secured {
+class Post extends Controller with MongoController with Secured {
 
 
   def upload = Action(parse.multipartFormData) { request =>
@@ -31,6 +31,13 @@ object Post extends Controller with MongoController with Secured {
       Redirect(controllers.routes.Application.index).flashing(
         "error" -> "Missing file")
     }
+  }
+
+
+  //别忘了加render()
+  def uploadPage = Action.async{
+    Future(Ok(views.html.Post.post.render()))
+
   }
 
 }
