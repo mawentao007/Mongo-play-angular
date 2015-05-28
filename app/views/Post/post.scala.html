@@ -1,3 +1,4 @@
+@(filesWithId:Option[List[(String,reactivemongo.api.gridfs.ReadFile[reactivemongo.bson.BSONValue])]])
 <!doctype html>
 <html lang="en">
     <head>
@@ -24,7 +25,14 @@
         </nav>
 
         <div class="container-fluid">
-        @helper.form(action = controllers.Post.routes.Post.upload(), 'enctype -> "multipart/form-data") {
+            @if(filesWithId.isDefined) {
+                @filesWithId.get.map {  file =>
+                    <img src="@controllers.Post.routes.Post.getPostById(file._1)"/>
+                }
+            }
+
+
+        @helper.form(action = controllers.Post.routes.Post.post(), 'enctype -> "multipart/form-data") {
 
             <input type="file" name="picture">
 

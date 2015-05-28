@@ -18,8 +18,9 @@ PUT           /user/:userName/:email         @controllers.Users.updateUser(userN
 DELETE        /users/:userName/:email        @controllers.Users.deleteUser(userName:String,email:String)
 
 #post 相应的controller必须声明为class，通过global获取injection实例
-POST          /post                          @controllers.Post.Post.upload
-GET           /post                          @controllers.Post.Post.uploadPage
+POST          /post                          @controllers.Post.Post.post
+GET           /post                          @controllers.Post.Post.getAllPost
+GET           /post/:id                      @controllers.Post.Post.getPostById(id:String)
 # Map static resources from the /public folder to the /assets URL path assets是object，无法动态注入。
 GET           /assets/*file                  controllers.Assets.at(path="/public", file)
 GET           /usert                         @controllers.Users.test
