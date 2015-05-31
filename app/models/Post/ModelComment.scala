@@ -11,7 +11,7 @@ import reactivemongo.bson._
 import play.api.data.format.Formats._
 
 import scala.collection.mutable
-import scala.concurrent.Await
+import scala.concurrent.{Future, Await}
 import scala.concurrent.duration.Duration
 
 //必须加
@@ -87,24 +87,34 @@ object ModelComment {
     })
 
 
-  def getCommentWithPostId: Map[String, List[String]] = {
+  def getCommentWithPostId: Future[Map[String, List[String]]] = {
     val comments = collection.find(BSONDocument()).cursor[models.Post.ModelComment]
     val contentListWithPostIdPrimise = comments.collect[List]().map { commentList =>
       commentList.map {
         comment => comment.postId.map(_.stringify) -> comment.content
       }
     }
+
+
+    val contentGroup = contentListWithPostIdPrimise map{
+      x => x.groupBy{case (x,y) => x}
+    }
+//map嵌套层数不能太多
+    contentGroup.map{
+      y => y.map{x => (x._1.get -> x._2.map(m => m._2))}
+    }
+/*
     val contentListWithPostId = Await.result(contentListWithPostIdPrimise,Duration.Inf)
 
 
-    val postIdToContentList = new mutable.HashMap[String, List[String]]
+
     contentListWithPostId.groupBy { case (x, y) => x }.foreach {
       x => postIdToContentList.put(x._1.get, x._2.map(m => m._2))
     }
 
 
     Logger.info("postIdToContentList " + postIdToContentList.toString)
-    postIdToContentList.toMap
+    postIdToContentList.toMap*/
   }
 
 }

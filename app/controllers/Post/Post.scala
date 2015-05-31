@@ -57,15 +57,19 @@ class Post extends Controller with MongoController with Secured {
   }
 
   def getAllPost =Action.async{
-    val postIdwithContent = ModelComment.getCommentWithPostId
-    gridFS.find(BSONDocument()).collect[List]().map{
-      files =>
-        val filesWithId = files.map { file =>
+
+    val postIdwithContent:Future[Map[String,List[String]]] = ModelComment.getCommentWithPostId
+    val filesWithId = gridFS.find(BSONDocument()).collect[List]().map{
+      files => files.map { file =>
           file.id.asInstanceOf[BSONObjectID].stringify -> file.asInstanceOf[ReadFile[BSONValue]]
         }
-        Ok(views.html.Post.post(postIdwithContent,Some(filesWithId),ModelComment.form))
     }
 
+
+    for{
+      x <- postIdwithContent
+      y <- filesWithId
+    } yield Ok(views.html.Post.post(x,Some(y),ModelComment.form))
 
   }
 
