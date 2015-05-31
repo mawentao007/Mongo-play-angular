@@ -41,36 +41,7 @@ class Users extends Controller with MongoController with Secured {
   import models._
   import models.JsonFormats._
 
-  /*
-  * request.body is a JsValue.
-  * There is an implicit Writes that turns this JsValue as a JsObject,
-  * so you can call insert() with this JsValue.
-  * (insert() takes a JsObject as parameter, or anything that can be
-  * turned into a JsObject using a Writes.)
-  *
-  *
-  * Performing a simple query
 
-Queries are performed quite the same way as in the Mongo Shell.
-
-val query = BSONDocument(
-"age" -> BSONDocument(
- "$gt" -> 27))
-
-// result type is Future[List[BSONDocument]]
-val peopleOlderThanTwentySeven =
-collection.
- find(query).
- cursor[BSONDocument].
- collect[List]()
-Of course you can collect only a limited number of documents.
-
-val peopleOlderThanTwentySeven =
-collection.
- find(query).
- cursor[BSONDocument].
- collect[List](25) // get up to 25 documents
-  */
 
 
   def createUser = IsAuthenticated(parse.json){

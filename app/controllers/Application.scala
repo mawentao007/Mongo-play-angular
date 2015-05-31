@@ -56,7 +56,7 @@ class Application @Inject() (uuidGenerator: UUIDGenerator) extends Controller wi
   def authenticate = Action { implicit request =>
     loginForm.bindFromRequest.fold(    //将数据与表格进行绑定，通过验证则不会返回错误消息
       formWithErrors => BadRequest(html.login(formWithErrors)),   //表格验证失败
-      user => Redirect(routes.Application.index).withSession("userName" -> user._1)
+      user => Redirect(controllers.Post.routes.Post.getAllPost()).withSession("userName" -> user._1)
     )
   }
 

@@ -1,5 +1,5 @@
 @import models.Post.ModelComment
-@(postIdWithContentList:Map[String,List[String]],filesWithId:Option[List[(String,reactivemongo.api.gridfs.ReadFile[reactivemongo.bson.BSONValue])]],commentForm:Form[ModelComment])
+@(postIdWithContentList:Map[String,List[(String,String)]],filesWithId:Option[List[(String,reactivemongo.api.gridfs.ReadFile[reactivemongo.bson.BSONValue])]],commentForm:Form[ModelComment])
 <!doctype html>
 <html lang="en">
     <head>
@@ -30,12 +30,13 @@
                 @filesWithId.get.map { file =>
                     <div id="postP" align="center">
                         <img src="@controllers.Post.routes.Post.getPostById(file._1)"/>
+                        <a href="@controllers.Post.routes.Post.deletePostById(file._1)">delete</a>
                     </div>
                     <div id="postComment">
                         @postIdWithContentList.get(file._1).map { comments =>
                             @comments.map{ comment =>
-                              <p>@comment</p>
-
+                              <p>@comment._2</p>
+                              <a href="@controllers.Post.routes.Comment.deleteCommentById(comment._1)" class="delete">删除 </a>
                             }
                         }
                     </div>

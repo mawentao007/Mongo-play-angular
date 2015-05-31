@@ -87,11 +87,11 @@ object ModelComment {
     })
 
 
-  def getCommentWithPostId: Future[Map[String, List[String]]] = {
+  def getCommentWithPostId: Future[Map[String, List[(String,String)]]] = {
     val comments = collection.find(BSONDocument()).cursor[models.Post.ModelComment]
     val contentListWithPostIdPrimise = comments.collect[List]().map { commentList =>
       commentList.map {
-        comment => comment.postId.map(_.stringify) -> comment.content
+        comment => comment.postId.map(_.stringify) -> (comment.id.map(_.stringify).get,comment.content)
       }
     }
 

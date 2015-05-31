@@ -1,8 +1,5 @@
 package controllers.Post
 
-
-
-
 import controllers.{Secured}
 import models.Post.ModelComment
 import org.joda.time.DateTime
@@ -32,6 +29,14 @@ class Comment extends Controller with MongoController with Secured {
       )
   }
 
+
+  def deleteCommentById(id:String) = Action.async{implicit request =>
+    Logger.info("deleteCommentById")
+    collection.remove(BSONDocument("_id" -> BSONObjectID(id))).map{
+      case lastError => Redirect(controllers.Post.routes.Post.getAllPost())
+    }
+  }
+
   /*def getCommentByPostId(postId:String) = Action.async{
     implicit request =>
       val comments = collection.find(BSONDocument("postId" -> BSONObjectID(postId))).cursor[models.Post.Comment]
@@ -44,11 +49,6 @@ class Comment extends Controller with MongoController with Secured {
       }
   }*/
 
-
-
-
-
-  //method
 
 
 }

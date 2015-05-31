@@ -30,8 +30,6 @@ angular.module('myApp.routeConfig', ['ngRoute'])
             .when('/users/:userName/:email', {
                 templateUrl: '/assets/partials/delete.html'
             })
-            .when('/usert',{
-            })
             .otherwise({redirectTo: '/'})
     .config ($locationProvider) ->
         $locationProvider.html5Mode({

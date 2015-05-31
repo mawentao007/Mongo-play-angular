@@ -4,6 +4,7 @@ package controllers.Post
 import controllers. Secured
 import models.Post.ModelComment
 import play.modules.reactivemongo.MongoController
+import reactivemongo.api.collections.default.BSONCollection
 
 import reactivemongo.api.gridfs.{ReadFile, GridFS}
 import reactivemongo.bson.{BSONObjectID, BSONDocument, BSONValue}
@@ -13,16 +14,13 @@ import play.api.mvc._
 //没有就报错
 import reactivemongo.api.gridfs.Implicits.{DefaultReadFileReader}
 
-
-
-
 /**
  * Created by marvin on 15-5-26.
  */
 class Post extends Controller with MongoController with Secured {
 
   val gridFS = GridFS(db)
-
+  val commentsCollection = db.collection[BSONCollection]("comments")
   def post = Action.async(gridFSBodyParser(gridFS)) { request =>
     // here is the future file!
     //   val futureFile:Future[[ReadFile[BSONValue]]] = request.body.files.head.ref
@@ -56,9 +54,21 @@ class Post extends Controller with MongoController with Secured {
       serve(gridFS,file)
   }
 
+  def deletePostById(id:String) = Action.async{
+    request => {
+      val removeResult = gridFS.remove(BSONObjectID(id)).map(_ => Ok("post removed"))
+      val deleteComments = commentsCollection.remove(BSONDocument("postId" -> BSONObjectID(id))).map(_=>Ok("comments deleted"))
+      for {
+        r1 <- removeResult
+        r2 <- deleteComments
+      } yield Redirect(controllers.Post.routes.Post.getAllPost())
+
+    }
+  }
+
   def getAllPost =Action.async{
 
-    val postIdwithContent:Future[Map[String,List[String]]] = ModelComment.getCommentWithPostId
+    val postIdwithContent:Future[Map[String,List[(String,String)]]] = ModelComment.getCommentWithPostId
     val filesWithId = gridFS.find(BSONDocument()).collect[List]().map{
       files => files.map { file =>
           file.id.asInstanceOf[BSONObjectID].stringify -> file.asInstanceOf[ReadFile[BSONValue]]

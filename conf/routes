@@ -8,8 +8,13 @@
 GET           /login                         @controllers.Application.login
 POST          /login                         @controllers.Application.authenticate
 GET           /logout                        @controllers.Application.logout
-GET           /                              @controllers.Application.index
-#GET           /randomUUID                        @controllers.Application.randomUUID
+GET           /                              @controllers.Post.Post.getAllPost
+
+GET           /randomUUID                    @controllers.Application.randomUUID
+
+#admin
+GET           /admin                         @controllers.Application.index
+
 
 # User management API
 GET           /users                         @controllers.Users.findUsers
@@ -21,12 +26,16 @@ DELETE        /users/:userName/:email        @controllers.Users.deleteUser(userN
 POST          /post                          @controllers.Post.Post.post
 GET           /post                          @controllers.Post.Post.getAllPost
 GET           /post/:id                      @controllers.Post.Post.getPostById(id:String)
+GET           /post/delete/:id               @controllers.Post.Post.deletePostById(id:String)
 
 #comments
 POST          /post/:id                      @controllers.Post.Comment.makeComment(id:String)
+#这里用DELETE不可以，我的理解是因为相应的url并不是可以显示的资源，通过这个url无法获取任何东西，因此404.用GET，可以去获取资源，
+#调用controller，因此可以进行删除。
+GET           /comment/:id                   @controllers.Post.Comment.deleteCommentById(id:String)
 #GET           /comment/post/:id              @controllers.Post.Comment.getCommentByPostId(id:String)
 # Map static resources from the /public folder to the /assets URL path assets是object，无法动态注入。
 GET           /assets/*file                  controllers.Assets.at(path="/public", file)
-GET           /usert                         @controllers.Users.test
+
 
 
