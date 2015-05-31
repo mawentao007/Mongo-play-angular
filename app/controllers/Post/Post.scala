@@ -1,7 +1,10 @@
 package controllers.Post
 
+
 import controllers. Secured
+import models.Post.ModelComment
 import play.modules.reactivemongo.MongoController
+
 import reactivemongo.api.gridfs.{ReadFile, GridFS}
 import reactivemongo.bson.{BSONObjectID, BSONDocument, BSONValue}
 import scala.concurrent.Future
@@ -54,12 +57,13 @@ class Post extends Controller with MongoController with Secured {
   }
 
   def getAllPost =Action.async{
+    val postIdwithContent = ModelComment.getCommentWithPostId
     gridFS.find(BSONDocument()).collect[List]().map{
       files =>
         val filesWithId = files.map { file =>
           file.id.asInstanceOf[BSONObjectID].stringify -> file.asInstanceOf[ReadFile[BSONValue]]
         }
-        Ok(views.html.Post.post(Some(filesWithId)))
+        Ok(views.html.Post.post(postIdwithContent,Some(filesWithId),ModelComment.form))
     }
 
 

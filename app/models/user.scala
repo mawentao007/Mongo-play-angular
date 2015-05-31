@@ -4,6 +4,7 @@ package models
 
 import play.api.Logger
 import play.api.libs.json._
+import play.modules.reactivemongo.json.collection.JSONCollection
 import services.MongoConnect._
 
 
@@ -35,7 +36,8 @@ object User{
  /* private final val logger: Logger = Logger(this.getClass())*/
 
   private val duration = Duration(100,"ms")
-  private def collection = getCollection("users")
+  private def db = getDb("one")
+  private def collection = db.collection[JSONCollection]("users")
 
   def authenticate(userName:String,password: String):Option[User] = {
    val userList:Future[List[User]] = collection.find(Json.obj("userName" -> userName,"password"->password)).cursor[User]

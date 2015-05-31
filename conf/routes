@@ -21,6 +21,10 @@ DELETE        /users/:userName/:email        @controllers.Users.deleteUser(userN
 POST          /post                          @controllers.Post.Post.post
 GET           /post                          @controllers.Post.Post.getAllPost
 GET           /post/:id                      @controllers.Post.Post.getPostById(id:String)
+
+#comments
+POST          /post/:id                      @controllers.Post.Comment.makeComment(id:String)
+#GET           /comment/post/:id              @controllers.Post.Comment.getCommentByPostId(id:String)
 # Map static resources from the /public folder to the /assets URL path assets是object，无法动态注入。
 GET           /assets/*file                  controllers.Assets.at(path="/public", file)
 GET           /usert                         @controllers.Users.test

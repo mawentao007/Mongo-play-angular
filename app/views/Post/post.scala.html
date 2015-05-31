@@ -1,4 +1,5 @@
-@(filesWithId:Option[List[(String,reactivemongo.api.gridfs.ReadFile[reactivemongo.bson.BSONValue])]])
+@import models.Post.ModelComment
+@(postIdWithContentList:Map[String,List[String]],filesWithId:Option[List[(String,reactivemongo.api.gridfs.ReadFile[reactivemongo.bson.BSONValue])]],commentForm:Form[ModelComment])
 <!doctype html>
 <html lang="en">
     <head>
@@ -26,8 +27,24 @@
 
         <div class="container-fluid">
             @if(filesWithId.isDefined) {
-                @filesWithId.get.map {  file =>
-                    <img src="@controllers.Post.routes.Post.getPostById(file._1)"/>
+                @filesWithId.get.map { file =>
+                    <div id="postP" align="center">
+                        <img src="@controllers.Post.routes.Post.getPostById(file._1)"/>
+                    </div>
+                    <div id="postComment">
+                        @postIdWithContentList.get(file._1).map { comments =>
+                            @comments.map{ comment =>
+                              <p>@comment</p>
+
+                            }
+                        }
+                    </div>
+                    @helper.form(action = controllers.Post.routes.Comment.makeComment(file._1)) {
+                    @helper.textarea(commentForm("content"))
+                        <div class="form-actions">
+                            <input class="btn btn-primary" type="submit">
+                        </div>
+                    }
                 }
             }
 

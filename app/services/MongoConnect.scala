@@ -1,12 +1,14 @@
 package services
 
 import play.modules.reactivemongo.json.collection.JSONCollection
+import reactivemongo.api.collections.default.BSONCollection
 
 /**
  * Created by marvin on 15-5-23.
  */
 object MongoConnect {
-  def getCollection(collectionName:String):JSONCollection = {
+  ///这个函数如何设计？？
+  def getDb(dbName:String) = {
     import reactivemongo.api._
     import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -16,11 +18,10 @@ object MongoConnect {
     val connection = driver.connection(List("localhost"))
 
     // Gets a reference to the database "plugin"
-    val db = connection("one")
+    val db = connection(dbName)
 
     // Gets a reference to the collection "acoll"
     // By default, you get a BSONCollection.
-    val collection = db.collection[JSONCollection](collectionName)
-    collection
+    db
   }
 }
